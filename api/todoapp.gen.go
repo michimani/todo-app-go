@@ -35,7 +35,7 @@ type NewTodoItem struct {
 	Content *string `json:"content,omitempty"`
 
 	// Flag of done. 0 means not done, 1 means done.
-	Done *int32 `json:"done,omitempty"`
+	Done *int `json:"done,omitempty"`
 
 	// Attribute for sort key of local secondary index.
 	LIdxDone *string `json:"l_idx_done,omitempty"`
@@ -51,10 +51,10 @@ type TodoItem struct {
 	// Embedded fields due to inline allOf schema
 
 	// Todo ID
-	Id string `json:"id"`
+	TodoID string `json:"todoID"`
 
 	// User ID
-	Userid string `json:"userid"`
+	UserID string `json:"userID"`
 }
 
 // FindTodosParams defines parameters for FindTodos.
@@ -85,14 +85,14 @@ type ServerInterface interface {
 	// (POST /todos)
 	AddTodo(w http.ResponseWriter, r *http.Request)
 	// delete a todo
-	// (DELETE /todos/{id})
-	DeleteTodoByID(w http.ResponseWriter, r *http.Request, id string)
+	// (DELETE /todos/{todoID})
+	DeleteTodoByID(w http.ResponseWriter, r *http.Request, todoID string)
 	// get a todo
-	// (GET /todos/{id})
-	FindTodoByID(w http.ResponseWriter, r *http.Request, id string)
+	// (GET /todos/{todoID})
+	FindTodoByID(w http.ResponseWriter, r *http.Request, todoID string)
 	// update a todo
-	// (PATCH /todos/{id})
-	UpdateTodoByID(w http.ResponseWriter, r *http.Request, id string)
+	// (PATCH /todos/{todoID})
+	UpdateTodoByID(w http.ResponseWriter, r *http.Request, todoID string)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -177,17 +177,17 @@ func (siw *ServerInterfaceWrapper) DeleteTodoByID(w http.ResponseWriter, r *http
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id string
+	// ------------- Path parameter "todoID" -------------
+	var todoID string
 
-	err = runtime.BindStyledParameter("simple", false, "id", chi.URLParam(r, "id"), &id)
+	err = runtime.BindStyledParameter("simple", false, "todoID", chi.URLParam(r, "todoID"), &todoID)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Invalid format for parameter id: %s", err), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Invalid format for parameter todoID: %s", err), http.StatusBadRequest)
 		return
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.DeleteTodoByID(w, r, id)
+		siw.Handler.DeleteTodoByID(w, r, todoID)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -203,17 +203,17 @@ func (siw *ServerInterfaceWrapper) FindTodoByID(w http.ResponseWriter, r *http.R
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id string
+	// ------------- Path parameter "todoID" -------------
+	var todoID string
 
-	err = runtime.BindStyledParameter("simple", false, "id", chi.URLParam(r, "id"), &id)
+	err = runtime.BindStyledParameter("simple", false, "todoID", chi.URLParam(r, "todoID"), &todoID)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Invalid format for parameter id: %s", err), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Invalid format for parameter todoID: %s", err), http.StatusBadRequest)
 		return
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.FindTodoByID(w, r, id)
+		siw.Handler.FindTodoByID(w, r, todoID)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -229,17 +229,17 @@ func (siw *ServerInterfaceWrapper) UpdateTodoByID(w http.ResponseWriter, r *http
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id string
+	// ------------- Path parameter "todoID" -------------
+	var todoID string
 
-	err = runtime.BindStyledParameter("simple", false, "id", chi.URLParam(r, "id"), &id)
+	err = runtime.BindStyledParameter("simple", false, "todoID", chi.URLParam(r, "todoID"), &todoID)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Invalid format for parameter id: %s", err), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("Invalid format for parameter todoID: %s", err), http.StatusBadRequest)
 		return
 	}
 
 	var handler = func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.UpdateTodoByID(w, r, id)
+		siw.Handler.UpdateTodoByID(w, r, todoID)
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -293,13 +293,13 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/todos", wrapper.AddTodo)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/todos/{id}", wrapper.DeleteTodoByID)
+		r.Delete(options.BaseURL+"/todos/{todoID}", wrapper.DeleteTodoByID)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/todos/{id}", wrapper.FindTodoByID)
+		r.Get(options.BaseURL+"/todos/{todoID}", wrapper.FindTodoByID)
 	})
 	r.Group(func(r chi.Router) {
-		r.Patch(options.BaseURL+"/todos/{id}", wrapper.UpdateTodoByID)
+		r.Patch(options.BaseURL+"/todos/{todoID}", wrapper.UpdateTodoByID)
 	})
 
 	return r
@@ -308,24 +308,24 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/+xX32/bNhD+V4jbHjZAlZ22AwoNe0iXbDAGrEWbYQ9NUDHi2eIikSx5qiME+t8HkvIP",
-	"2XKcpB320qcovCPv43333dF3UOjaaIWKHGR34IoSax4+z63V1n8Yqw1akhiWCy3Q/xXoCisNSa0gi84s",
-	"2BKYa1tzggykohfPIQFqDcZ/cYEWugRqdI4vDh60Mq+3OrJSLaDrErD4qZEWBWQfoA+4cr/qEvgTlxda",
-	"6BlhPQZeESraD+u3sN6asG3bHoQEhFYjyH+r+ILpOfPWlE1ZjVw5pjSFlYSd9CvB/rAsVR+luP04Hu6U",
-	"yMrrhpDNtWVOW2I32HoAlS54xRwWWgluWyaVwNt07CIkqcIDyYi2YwREL5/37aTzqnozh+zDHXxvcQ4Z",
-	"fDfZlNmkr7HJNlNdskuVFAeAzc4gAcVrjyp8712rcWjHtv/l0A62+4WxI3YuKQWsD73qrjpvl2qu9yO8",
-	"O39/wU7fzjwNpIV+xo2BdZ5hteRdIIHPaF3cN01P0qmHrg0qbiRk8CKdplNIwHAqQ0Imfnf4WuBIBf+O",
-	"xHhVhbAuYaEmagxASqzZdcsaJ9WCfWrQtsxwy2sktM4Xhs879+fMhC9kqcRFiOWjr/wCncOQf5dIJVof",
-	"IIRlJXfsGlH1Gsin+Z4K8pN8RwfSHxVQbYgJJZ/03cjf9ahYfAHtFAu3CyTWV1UbZYLcFqVUi5TlgZQ8",
-	"YXkv+zwkLb/WVOYpuyil22SJLbW9cWwpqWT5DbZLbUW+MR+6BgUIg4vsVdou7LfckgfiuYzkRSkmq/bk",
-	"jR7kmloqObGaU1FGykMFHILUg78X05Uvf2e0clGKz6fTnebJjalkEUpm8o/T6mdWlNw6pF8amr/aDJIg",
-	"ZMI6HHNfL9hqBCs43FreQhDbMENv/ghNGOe8qegIsCGU+xDEcTcSrlF4a7AgFAx7nwRcU9fctpB5MW6l",
-	"3SMz2o3o81QIxoPTvuJORRAcxLaDjl5r0X61mw367LC3kW2w+zK2n716OJIhjDFWX8bgQ9NrLti7mBjv",
-	"89OYz0wRWsUr9h7tZ7TsfIQqvqYgGGJDndxJ0cXzKqSRaXgW1vuNvo/SegoNWYyO/o6v22C+t3nOzlZD",
-	"gnmFMNKsR9AL1zf+jW7DDBoS9zgJv/z/SH2YVJ8M4KnKFdvEepyH5+pR7lcz8wnM/0d8T7/xPdKpN2Qb",
-	"PzBH3ohG8AepPTp+gdqbcMBXYX//7eNfDOHFo3C5Hjoh0LUfLZsXSv/Kf8TZv/bPkB+2lv1PJuKyStP0",
-	"xxCWHwu8KoxHhR7+xLqE6SXsPTAv4WS9OnhiDuM/4YX5TWPHNdZsyyfud2EgR1E0toIMSiLjsskEb3lt",
-	"KkwLXU+4kRPorrp/AwAA//9h6LxikRAAAA==",
+	"H4sIAAAAAAAC/+xX32/bNhD+V4jbHjZAlZ22AwoPe0iXbjAGrEWbYQ9tUDHS2eIikSx5aiIE+t+HI+Uf",
+	"suU4STvspU9ReEfex/vuu6NvITe1NRo1eZjdgs9LrGX4fOWccfxhnbHoSGFYzk2B/LdAnztlSRkNs+gs",
+	"gi2BhXG1JJiB0vTsKSRArcX4Ly7RQZdAjd7L5cGDVub1Vk9O6SV0XQIOPzXKYQGz99AHXLlfdAn8idfn",
+	"pjBzwnoMvCbUtB+Wt4jemoht2x6EBAqjR5D/VsmlMAvB1lRMRY1Se6ENhZVEnPQrwb6TpdEcVR9VcfNx",
+	"PNgpkVOXDaFYGCe8cSSusOXwlcllJTzmRhfStULpAm/SsWuQogoPpCLajqU/enHWt1Muq+r1Ambvb+F7",
+	"hwuYwXeTTZFN+gqbbPPUJbtEEZvODoCbn41dp/Hoxrb85dGNbtm9TAy5Puiiu+jYR+mF2T/17at35+L0",
+	"zZxTzjufSGthnVNYLbELJPAZnY/7pulJOmW4xqKWVsEMnqXTdAoJWElluPyEd4evJY7U6u9IQlZVCOsT",
+	"EfivMQApsRaXrWi80kvxqUHXCiudrJHQeS4CzrHkc+YFl6zSxXmIxdFXfoG6Yci/S6QSHQcIYUUpvbhE",
+	"1H21Z9Nsr96zk2yn4hUfFVBBAlrWnKhQ3knfd/iuR5sHF8tOUUi3RBJ9BbVREihdXiq9TEUWSMkSkfUC",
+	"z0LSsktDZZaK81L5TZbEtXFXXlwrKkV2he21cUW2MR+6BgUIg4vsVdsu7DfSEQNhLiN5UXbJqhGxkUGu",
+	"qaVSkqgl5WWkPFTAIUg9+DsxXbAEvDXaR9k9nU532qS0tlJ5KJnJP97on0VeSueRfmlo8WIzMvhLEdbh",
+	"mLt0vyX6FRzpnGwhiG2Yodd/hHaLC9lUdATYEMpdCOJgGwnXaLyxmBMWAnufBHxT19K1MGMxbqWdkVnj",
+	"R/R5WhRCBqd9xZ0WQXAQWw96emmK9qvdbNBTh/2NXIPdl7H95MX9kQxhjLH6PAYfml7KQryNiWGfn8Z8",
+	"5prQaVmJd+g+oxOvRqiSawqCITbUyW1s8V08s0IamX5nYb3fzL2U1hNnyGR05Hu+bIP5zgY6P1sNCsEq",
+	"EWREj6AXLzf/rXaymkVDAh8m5ef/H7n3k+yjATxWwcU2uYzz8Hw9yv9qdj6C/f+Q8+k3zke69oZwy8Nz",
+	"5I1oC3kv1UfHL1B9Ew74ahWw/xbiF0R4AWm8Xg+hEOySR80mWP/Cf8DZv/bPkh+2lvnHEklVpWn6Ywgr",
+	"jwVeFceDQg9/XH2A6QfYe3B+gJP16uDJOYz/iBfnN50d11mzLaG434cBHYXRuApmUBJZP5tM8EbWtsI0",
+	"N/VEWjWB7qL7NwAA//+QNqB1ixAAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

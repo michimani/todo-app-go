@@ -68,13 +68,13 @@ paths:
                 schema:
                   $ref: '#/components/schemas/Error'
 
-  /todos/{id}:
+  /todos/{todoID}:
     get:
       summary: 'get a todo'
       description: 'Get a todo by todo ID'
       operationId: findTodoByID
       parameters:
-        - name: id
+        - name: todoID
           in: path
           description: ID of todo item
           required: true
@@ -98,7 +98,7 @@ paths:
       description: 'Update a todo by todo ID'
       operationId: updateTodoByID
       parameters:
-        - name: id
+        - name: todoID
           in: path
           description: ID of todo item to update
           required: true
@@ -141,7 +141,7 @@ paths:
       description: 'Delete a todo by todo ID'
       operationId: deleteTodoByID
       parameters:
-        - name: id
+        - name: todoID
           in: path
           description: ID of todo item to delete
           required: true
@@ -167,16 +167,16 @@ components:
       allOf:
         - $ref: '#/components/schemas/NewTodoItem'
         - required:
-          - id
-          - userid
+          - todoID
+          - userID
           properties:
-            id:
+            todoID:
               type: string
-              name: 'ID'
+              # name: 'TodoID'
               description: 'Todo ID'
-            userid:
+            userID:
               type: string
-              name: 'UserID'
+              # name: 'UserID'
               description: 'User ID'
     NewTodoItem:
       required:
@@ -190,7 +190,7 @@ components:
           description: 'Todo content, description'
         done:
           type: integer
-          format: int32
+          format: int
           description: 'Flag of done. 0 means not done, 1 means done.'
         l_idx_done:
           type: string

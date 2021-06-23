@@ -3,14 +3,43 @@ todo-app-go
 Sample of todo app written in Go.
 
 
-# Usage
+# Preparing
 
-1. clone this repository
+## clone this repository
 
-2. start server
+```bash
+git clone https://github.com/michimani/todo-app-go.git \
+&& cd todo-app-go
+```
 
-3. request
+## set up DynamoDB local
 
+1. Download DynamoDB local from the link bellow.
+
+  [Deploying DynamoDB Locally on Your Computer - Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
+
+2. Start DynamoDB local.
+
+  ```bash
+  export DYNAMODB_LOCAL_DIR=your_dynamo_db_local_path \
+  && sh ./scripts/start_local_db.sh
+  ```
+
+3. Create table.
+
+```bash
+aws dynamodb create-table \
+--cli-input-json file://local/dynamodb_local_schema.json \
+--endpoint-url http://localhost:8001
+```
+
+## start server
+
+TBD
+
+## request
+
+TBD
 
 # Development
 

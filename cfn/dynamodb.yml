@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "DynamoDB template for todo-app."
+
+Resources:
+  DynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "userID"
+          AttributeType: "S"
+        - AttributeName: "todoID"
+          AttributeType: "S"
+        - AttributeName: "lIdxDone"
+          AttributeType: "S"
+      BillingMode: "PROVISIONED"
+      KeySchema:
+        - AttributeName: "userID"
+          KeyType: "HASH"
+        - AttributeName: "todoID"
+          KeyType: "RANGE"
+      LocalSecondaryIndexes:
+        - IndexName: FilterDoneIndex
+          KeySchema:
+            - AttributeName: "userID"
+              KeyType: "HASH"
+            - AttributeName: "lIdxDone"
+              KeyType: "RANGE"
+          Projection:
+              ProjectionType: "ALL"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: "todos"
+
+

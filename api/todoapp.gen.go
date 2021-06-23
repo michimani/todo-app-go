@@ -22,7 +22,7 @@ import (
 type Error struct {
 
 	// Error code
-	Code int32 `json:"code"`
+	Code int `json:"code"`
 
 	// Error message
 	Message string `json:"message"`
@@ -38,7 +38,7 @@ type NewTodoItem struct {
 	Done *int `json:"done,omitempty"`
 
 	// Attribute for sort key of local secondary index.
-	LIdxDone *string `json:"l_idx_done,omitempty"`
+	LIdxDone *string `json:"lIdxDone,omitempty"`
 
 	// Todo title
 	Title string `json:"title"`
@@ -61,7 +61,7 @@ type TodoItem struct {
 type FindTodosParams struct {
 
 	// Whether the todo has been done. `0` means not done, `1` means done.
-	Done *int32 `json:"done,omitempty"`
+	Done *int `json:"done,omitempty"`
 
 	// Target property for searching. `title`, `content`, or `both`. This parameter works with `keyword` parameter.
 	Target *string `json:"target,omitempty"`
@@ -308,24 +308,24 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/+xX32/bNhD+V4jbHjZAlZ22AwoPe0iXbjAGrEWbYQ9tUDHS2eIikSx5aiIE+t+HI+Uf",
-	"suU4STvspU9ReEfex/vuu6NvITe1NRo1eZjdgs9LrGX4fOWccfxhnbHoSGFYzk2B/LdAnztlSRkNs+gs",
-	"gi2BhXG1JJiB0vTsKSRArcX4Ly7RQZdAjd7L5cGDVub1Vk9O6SV0XQIOPzXKYQGz99AHXLlfdAn8idfn",
-	"pjBzwnoMvCbUtB+Wt4jemoht2x6EBAqjR5D/VsmlMAvB1lRMRY1Se6ENhZVEnPQrwb6TpdEcVR9VcfNx",
-	"PNgpkVOXDaFYGCe8cSSusOXwlcllJTzmRhfStULpAm/SsWuQogoPpCLajqU/enHWt1Muq+r1Ambvb+F7",
-	"hwuYwXeTTZFN+gqbbPPUJbtEEZvODoCbn41dp/Hoxrb85dGNbtm9TAy5Puiiu+jYR+mF2T/17at35+L0",
-	"zZxTzjufSGthnVNYLbELJPAZnY/7pulJOmW4xqKWVsEMnqXTdAoJWElluPyEd4evJY7U6u9IQlZVCOsT",
-	"EfivMQApsRaXrWi80kvxqUHXCiudrJHQeS4CzrHkc+YFl6zSxXmIxdFXfoG6Yci/S6QSHQcIYUUpvbhE",
-	"1H21Z9Nsr96zk2yn4hUfFVBBAlrWnKhQ3knfd/iuR5sHF8tOUUi3RBJ9BbVREihdXiq9TEUWSMkSkfUC",
-	"z0LSsktDZZaK81L5TZbEtXFXXlwrKkV2he21cUW2MR+6BgUIg4vsVdsu7DfSEQNhLiN5UXbJqhGxkUGu",
-	"qaVSkqgl5WWkPFTAIUg9+DsxXbAEvDXaR9k9nU532qS0tlJ5KJnJP97on0VeSueRfmlo8WIzMvhLEdbh",
-	"mLt0vyX6FRzpnGwhiG2Yodd/hHaLC9lUdATYEMpdCOJgGwnXaLyxmBMWAnufBHxT19K1MGMxbqWdkVnj",
-	"R/R5WhRCBqd9xZ0WQXAQWw96emmK9qvdbNBTh/2NXIPdl7H95MX9kQxhjLH6PAYfml7KQryNiWGfn8Z8",
-	"5prQaVmJd+g+oxOvRqiSawqCITbUyW1s8V08s0IamX5nYb3fzL2U1hNnyGR05Hu+bIP5zgY6P1sNCsEq",
-	"EWREj6AXLzf/rXaymkVDAh8m5ef/H7n3k+yjATxWwcU2uYzz8Hw9yv9qdj6C/f+Q8+k3zke69oZwy8Nz",
-	"5I1oC3kv1UfHL1B9Ew74ahWw/xbiF0R4AWm8Xg+hEOySR80mWP/Cf8DZv/bPkh+2lvnHEklVpWn6Ywgr",
-	"jwVeFceDQg9/XH2A6QfYe3B+gJP16uDJOYz/iBfnN50d11mzLaG434cBHYXRuApmUBJZP5tM8EbWtsI0",
-	"N/VEWjWB7qL7NwAA//+QNqB1ixAAAA==",
+	"H4sIAAAAAAAC/+xX32/bNhD+V4jbHjZAlZ2tAwoPe0iXbDAGrEWbYQ9NADHS2eIikSx5aiIE+t+HI+Uf",
+	"suU4STvspU9ReEfex/vuu6PvITe1NRo1eZjdg89LrGX4PHfOOP6wzlh0pDAs56ZA/lugz52ypIyGWXQW",
+	"wZbAwrhaEsxAaYIEqLUY/8ElOugSqNF7uTx4zMq83urJKb2ErkvA4cdGOSxg9gH6cCv3qy6BP/H2whRm",
+	"TliPQdeEmvbD8hbRWxOxbduDkEBh9Ajy3yq5FGYh2JqKqahRai+0obCSiJN+Jdgfk6NqXtydjYY6JXLq",
+	"uiEUC+OEN47EDbYcvDK5rITH3OhCulYoXeBdOnYJUlThgURE27HkRy/O+XbCZVW9WcDswz1863ABM/hm",
+	"simwSV9dk22WumSXJmLT2QFw87Ox6zQe3diWvzy60S27l4kh1wdddVcd+yi9MPunvjt/fyFO38455bzz",
+	"hbQW1jmF1RK7QAKf0Pm4b5qepFOGayxqaRXM4Md0mk4hASupDJef8O7wtcSRSv0dSciqCmF9IgL/NQYg",
+	"JdbiuhWNV3opPjboWmGlkzUSOs9FwDmWfM684IJVurgIsTj6yi9QNwz5d4lUouMAIawopRfXiLqv9Wya",
+	"7VV7dpLt1LviowIqSEDLmhMVlJT0PYfvekQUXCo7JSHdEkn09dNGQaB0ean0MhVZoCRLRNaLOwspy64N",
+	"lVkqLkrlNzkSt8bdeHGrqBTZDba3xhXZxnzoEhQgDK6xV2u7sN9KRwyEmYzURdElqybERga5JpZKSaKW",
+	"lJeR8MD/IUg9+AcxXbEAvDXaR9H9MJ3utEhpbaXyUDCTf7zRP4u8lM4j/dLQ4tVmWPCXIqzDMQ+pfkvy",
+	"KzjSOdlCkNowQ2/+CK0WF7Kp6AiwIZSHEMSRNhKu0XhnMScsBPY+CfimrqVrYcZS3Eo7I7PGj6jztCiE",
+	"DE77ejstgtwgNh709NoU7Re72aCjDrsbuQa7z2P7xavHIxnCGGP1ZQw+NL2WhXgXE8M+P435zDWh07IS",
+	"79F9QifOR6iSawqCIbbTyX1s8F08s0IamX1nYb3fzJ2U1vNmyGR05Hu+boP5wfY5P1uNCcEqEWREj6AX",
+	"L7f+rXaymkRDAp8m5Zf/H7mPk+yzATxXwcU2uYzz8HQ9yv9qcj6D/f+Q8+lXzke69oZwy8Nz5IVoC/ko",
+	"1UfHz1B9Ew74YhWw/xbiF0R4AWm8XQ+hEOyaR80mWP++f8LZv/bPku+2lvmHEklVpWn6fQgrjwVeFceT",
+	"Qg9/WF3C9BL2npuXcLJeHTw4h/Gf/N78qrLjKmu2BRT3+zCeoywaV8EMSiLrZ5MJ3snaVpjmpp5IqybQ",
+	"XXX/BgAA///udSpagxAAAA==",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

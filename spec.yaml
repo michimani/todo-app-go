@@ -1,0 +1,210 @@
+openapi: '3.0.0'
+info:
+  title: 'todo-app API'
+  description: 'REST API of todo-app'
+  version: '0.1.0'
+servers:
+  - url: 'https://example.com/api/'
+paths:
+  /todos:
+    post:
+      summary: 'add a todo'
+      description: 'Add a todo.'
+      operationId: addTodo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewTodoItem'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: 'Internal Server Error'
+    get:
+      summary: 'get some todos'
+      description: 'Get all todos, or some of them by using query parameters.'
+      operationId: findTodos
+      parameters:
+        - name: done
+          in: query
+          description: 'Whether the todo has been done. `0` means not done, `1` means done.'
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: target
+          in: query
+          description: 'Target property for searching. `title`, `content`, or `both`. This parameter works with `keyword` parameter.'
+          required: false
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: 'Part or all of the title, content or both of them that match some todos.'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json; charset=utf8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TodoItem'
+        default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+
+  /todos/{id}:
+    get:
+      summary: 'get a todo'
+      description: 'Get a todo by todo ID'
+      operationId: findTodoByID
+      parameters:
+        - name: id
+          in: path
+          description: ID of todo item
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+        default:
+          description: 'unexpected error'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      summary: 'update a todo'
+      description: 'Update a todo by todo ID'
+      operationId: updateTodoByID
+      parameters:
+        - name: id
+          in: path
+          description: ID of todo item to update
+          required: true
+          schema:
+            type: string
+        - name: title
+          in: body
+          description: 'Title for new todo.'
+          required: false
+          schema:
+            type: string
+        - name: content
+          in: body
+          description: 'Content (description, detail...) for a new todo.'
+          required: false
+          schema:
+            type: string
+        - name: done
+          in: body
+          description: 'Flag of done. "0" means not done, "1" means done.'
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+        default:
+          description: 'unexpected error'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: 'delete a todo'
+      description: 'Delete a todo by todo ID'
+      operationId: deleteTodoByID
+      parameters:
+        - name: id
+          in: path
+          description: ID of todo item to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 'OK'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/TodoItem'
+        default:
+          description: 'unexpected error'
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    TodoItem:
+      allOf:
+        - $ref: '#/components/schemas/NewTodoItem'
+        - required:
+          - id
+          - userid
+          properties:
+            id:
+              type: string
+              name: 'ID'
+              description: 'Todo ID'
+            userid:
+              type: string
+              name: 'UserID'
+              description: 'User ID'
+    NewTodoItem:
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: 'Todo title'
+        content:
+          type: string
+          description: 'Todo content, description'
+        done:
+          type: integer
+          format: int32
+          description: 'Flag of done. 0 means not done, 1 means done.'
+        l_idx_done:
+          type: string
+          description: 'Attribute for sort key of local secondary index.'
+
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+        message:
+          type: string
+          description: Error message

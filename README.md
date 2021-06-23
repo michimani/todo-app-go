@@ -16,22 +16,22 @@ git clone https://github.com/michimani/todo-app-go.git \
 
 1. Download DynamoDB local from the link bellow.
 
-  [Deploying DynamoDB Locally on Your Computer - Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
+    [Deploying DynamoDB Locally on Your Computer - Amazon DynamoDB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)
 
 2. Start DynamoDB local.
 
-  ```bash
-  export DYNAMODB_LOCAL_DIR=your_dynamo_db_local_path \
-  && sh ./scripts/start_local_db.sh
-  ```
+    ```bash
+    export DYNAMODB_LOCAL_DIR=your_dynamo_db_local_path \
+    && sh ./scripts/start_local_db.sh
+    ```
 
 3. Create table.
 
-```bash
-aws dynamodb create-table \
---cli-input-json file://local/dynamodb_local_schema.json \
---endpoint-url http://localhost:8001
-```
+    ```bash
+    aws dynamodb create-table \
+    --cli-input-json file://local/dynamodb_local_schema.json \
+    --endpoint-url http://localhost:8001
+    ```
 
 ## start server
 
